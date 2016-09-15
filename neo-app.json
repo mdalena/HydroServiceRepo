@@ -1,0 +1,23 @@
+{
+    "authenticationMethod": "none",
+    "routes": [
+        {
+                "path": "/measurement",
+                "target": {
+                                "type": "destination",
+                                "name": "HydroserviceODataService"
+                },
+                "description": "Hydroservice Data Sensor Dashboard"
+        },
+{
+                "path": "/sapui5",
+                "target": {
+                                "type": "service",
+                                "name": "sapui5",
+                                "entryPath":"/resources"
+                },
+                "description": "SAPUI5"
+        }
+        
+    ]
+}
