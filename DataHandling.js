@@ -85,7 +85,7 @@ var buildMainPage = function(id, title) {
 	return page;
 };
 
-var buildChartPage = function(id, oModel, app, sensorNumber, chart) {
+var buildChartPage = function(id, oModel, app, chart) {
 
 	var chartPage = new sap.m.Page(id , {
 		showNavButton: true, navButtonPress: function(){app.back();},
@@ -93,37 +93,79 @@ var buildChartPage = function(id, oModel, app, sensorNumber, chart) {
 	});	
 	chartPage.setModel(oModel);
 	
-	chartPage.bindProperty("title", MODEL + sensorNumber + "/description");
+	chartPage.bindProperty("title", MODEL);
 
 	return chartPage;
 };
 
 
 /*-- Functions for creating the SENSOR TILES of the app --*/
+var buildTemperatureTileToChart = function(app, oModel){
+	debugger;
+	
+	var tile = new sap.m.StandardTile("Temperature" + "SensorTile", {
+		numberUnit : oModel.getProperty(MODEL+TEMPERATURE_UNIT);,
+		infoState : "Success",
+		icon : sap.ui.core.IconPool.getIconURI("Temperature"),
+		press : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");},
+		tap   : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");}
+	});
+	tile.setModel(oModel);
 
-var buildSensorTileToChart = function(app, oModel, sensorNumber, iconName) {
+	// All the bindings
+	tile.bindProperty("title", "Temperature");
+	tile.bindProperty("info", "Last measured temperature");
+	tile.bindProperty("number", MODEL + TEMPERATURE + "Temperature")
+	
+	return tile;
+}
+
+var buildPressureTileToChart = function(app, oModel){
+	
+}
+
+var buildVibrationTileToChart = function(app, oModel){
+	
+}
+
+var buildHumidityTileToChart = function(app, oModel){
+	
+}
+
+var buildCloggedTileToChart = function(app, oModel){
+	
+}
+
+var buildSensorTileToChart = function(app, oModel, iconName) {
 
 	debugger;
 	
 	var numUnit = "";
 	
 	if(strcmp2("temperature", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
-		numUnit = "Celsius";
+		numUnit = oModel.getProperty(MODEL+TEMPERATURE_UNIT);
+	}else if(strcmp2("pressure", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
+		numUnit = oModel.getProperty(MODEL+PRESSURE_UNIT);
+	}else if(strcmp2("vibration", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
+		numUnit = oModel.getProperty(MODEL+VIBRATION_UNIT);
+	}else if(strcmp2("humidity", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
+		numUnit = oModel.getProperty(MODEL+HUMIDITY_UNIT);
 	}else{
-		numUnit = "Percentage";
+		console.log("ERROR - unit measurement not found");
+		numUnit = "";
 	}
 	
-	var tile = new sap.m.StandardTile(iconName.replace(/"([^"]+(?="))"/g, '$1') + "SensorTile" + sensorNumber, {
+	var tile = new sap.m.StandardTile(iconName.replace(/"([^"]+(?="))"/g, '$1') + "SensorTile", {
 		numberUnit : numUnit,
 		infoState : "Success",
-		icon : sap.ui.core.IconPool.getIconURI("Temperature"),
-		press : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor" + sensorNumber);},
-		tap   : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor" + sensorNumber);}
+		icon : sap.ui.core.IconPool.getIconURI(iconName),
+		press : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");},
+		tap   : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");}
 	});
 	tile.setModel(oModel);
 
 	// All the bindings
-	tile.bindProperty("title", MODEL + sensorNumber + "/description");
+	tile.bindProperty("title", MODEL +  + "/description");
 	tile.bindProperty("info", MODEL + sensorNumber + "/device");
 	tile.bindProperty("number", MODEL + sensorNumber + "/lastMeasurement/" + iconName.replace(/"([^"]+(?="))"/g, '$1'), function(bValue) {
 		returnVal = Math.round(bValue * 10) / 10 ;
@@ -232,32 +274,32 @@ function mainFunction(){
 
 	
 	// Now create the page and place it into the HTML document
-	var mainPage = buildMainPage(idPageMain, "DHT11 - Humidty and Temperature Monitor");
+	var mainPage = buildMainPage(idPageMain, "Hydroservice Data Sensor Dashboard");
 	
 	var appLink = window.location.href;
-	var oModelSensorData = getModelFromURL("/sensordata");
+	var oModelSensorData = getModelFromURL(MODEL);
 
 	debugger;
 	
 	
 	var sensors = oModelSensorData.getData();
-	for (var sensorNumber = 0; sensors.hasOwnProperty('sensor'+sensorNumber); sensorNumber++){
-		//Temperature tile
-		var sensorTile = buildSensorTileToChart(app, oModelSensorData, sensorNumber , "temperature");
-	 	var chart_sensor = getChartForMetric("temperature_chart_sensor" + sensorNumber, oModelSensorData, "temperature", MODEL +  sensorNumber + "/measurements", "","");
-		var detailPageChart_sensor = buildChartPage("temperature_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
+	
+	//Temperature tile
+	var sensorTile = buildTemperatureTileToChart(app, oModelSensorData);
+ 	//var chart_sensor = getChartForMetric("temperature_chart_sensor" + sensorNumber, oModelSensorData, "temperature", MODEL +  sensorNumber + "/measurements", "","");
+	//var detailPageChart_sensor = buildChartPage("temperature_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
-		mainPage.addContent(sensorTile);
-		app.addPage(detailPageChart_sensor);
-		
-		//Humidity tile
-		var sensorTile = buildSensorTileToChart(app, oModelSensorData, sensorNumber , "humidity");
-	 	var chart_sensor = getChartForMetric("humidity_chart_sensor" + sensorNumber, oModelSensorData, "humidity", MODEL +  sensorNumber + "/measurements", "","");
-		var detailPageChart_sensor = buildChartPage("humidity_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
+	mainPage.addContent(sensorTile);
+	app.addPage(detailPageChart_sensor);
+	
+	//Humidity tile
+	//var sensorTile = buildSensorTileToChart(app, oModelSensorData, sensorNumber , "humidity");
+ 	//var chart_sensor = getChartForMetric("humidity_chart_sensor" + sensorNumber, oModelSensorData, "humidity", MODEL +  sensorNumber + "/measurements", "","");
+	//var detailPageChart_sensor = buildChartPage("humidity_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
-		mainPage.addContent(sensorTile);
-		app.addPage(detailPageChart_sensor);
-	}
+	//mainPage.addContent(sensorTile);
+	//app.addPage(detailPageChart_sensor);
+
 	
 	app.addPage(mainPage);
 	app.setBackgroundImage("images/sidi.jpg");
