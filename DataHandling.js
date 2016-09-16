@@ -263,6 +263,9 @@ var updateModelOfUiObject = function(id, model){
 /*-- THE MAIN APP											--*/
 /*-- ###################################################### --*/
 function mainFunction(){
+	debugger;
+	console.log("entered main function...");
+	
 	jQuery.sap.require("sap.ui.core.IconPool");
 	jQuery.sap.require("sap.ui.core.Icon");
 	jQuery.sap.declare("sap.ui.customized.FontIconContainer");
