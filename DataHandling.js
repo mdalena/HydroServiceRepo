@@ -1,3 +1,4 @@
+const ITEM = "/Measurement";
 const MODEL = "/measurement";
 const STORED_AT = "";
 const TEMPERATURE = "/temperature";
@@ -14,42 +15,13 @@ const VIBRATION_UNIT = "/vibrationUnit";
 /*-- ###################################################### --*/
 /*-- UTILITY functions										--*/
 /*-- ###################################################### --*/
-function strcmp ( str1, str2 ) {
-    // http://kevin.vanzonneveld.net
-    // +   original by: Waldo Malqui Silva
-    // +      input by: Steve Hilder
-    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +    revised by: gorthaur
-    // *     example 1: strcmp( 'waldo', 'owald' );
-    // *     returns 1: 1
-    // *     example 2: strcmp( 'owald', 'waldo' );
-    // *     returns 2: -1
 
-    return ( ( str1 == str2 ) ? 0 : ( ( str1 > str2 ) ? 1 : -1 ) );
-}
-
-function strcmp2 ( str1, str2 ) {
-    // http://kevin.vanzonneveld.net
-    // +   original by: Waldo Malqui Silva
-    // +      input by: Steve Hilder
-    // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-    // +    revised by: gorthaur
-    // *     example 1: strcmp( 'waldo', 'owald' );
-    // *     returns 1: 1
-    // *     example 2: strcmp( 'owald', 'waldo' );
-    // *     returns 2: -1
-
-    return ( ( str1 == str2 ) ? true : false );
-}
 
 /*-- ###################################################### --*/
 /*-- DATA MODEL functions									--*/
 /*-- ###################################################### --*/
 
 var getModelFromURL = function(url) {
-	
-	debugger;
-	
 	var url = url;
 	var oModel = new sap.ui.model.json.JSONModel();
 	oModel.loadData(url, null, false);
@@ -60,16 +32,6 @@ function updateDataModel(model){
 	model.refresh();
 }
 
-/**
- * @param serverData {object} raw response from server; see above
- */
-function measurementData(serverData) {
-    this.conditions = serverData.criteria.category;
-    this.makes = serverData.criteria.make;
-    this.models = serverData.criteria.model;
-    this.years = serverData.criteria.year;
-    
-}
 
 /*-- ###################################################### --*/
 /*-- All VIEWS												--*/
@@ -100,25 +62,29 @@ var buildChartPage = function(id, oModel, app, chart) {
 
 
 /*-- Functions for creating the SENSOR TILES of the app --*/
-var buildTemperatureTileToChart = function(app, oModel){
+var buildTemperatureTileToChart = function(app, oModel, path){
+	
 	debugger;
 	
-	var tile = new sap.m.StandardTile("Temperature" + "SensorTile", {
-		numberUnit : oModel.getProperty(MODEL+TEMPERATURE_UNIT);,
+	var tile = new sap.m.StandardTile("TemperatureSensorTile", {
+		//numberUnit : oModel.getProperty(ITEM + measurementNumber + TEMPERATURE_UNIT),
 		infoState : "Success",
 		icon : sap.ui.core.IconPool.getIconURI("Temperature"),
-		press : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");},
-		tap   : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");}
+		//press : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");},
+		//tap   : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");}
 	});
 	tile.setModel(oModel);
 
 	// All the bindings
 	tile.bindProperty("title", "Temperature");
-	tile.bindProperty("info", "Last measured temperature");
-	tile.bindProperty("number", MODEL + TEMPERATURE + "Temperature")
+	//tile.bindProperty("info", "Last measured temperature");
+	tile.bindProperty("number", path + TEMPERATURE);
+	tile.bindProperty("numberUnit", path + TEMPERATURE_UNIT);
 	
 	return tile;
 }
+
+ 
 
 var buildPressureTileToChart = function(app, oModel){
 	
@@ -136,102 +102,10 @@ var buildCloggedTileToChart = function(app, oModel){
 	
 }
 
-var buildSensorTileToChart = function(app, oModel, iconName) {
-
-	debugger;
-	
-	var numUnit = "";
-	
-	if(strcmp2("temperature", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
-		numUnit = oModel.getProperty(MODEL+TEMPERATURE_UNIT);
-	}else if(strcmp2("pressure", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
-		numUnit = oModel.getProperty(MODEL+PRESSURE_UNIT);
-	}else if(strcmp2("vibration", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
-		numUnit = oModel.getProperty(MODEL+VIBRATION_UNIT);
-	}else if(strcmp2("humidity", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
-		numUnit = oModel.getProperty(MODEL+HUMIDITY_UNIT);
-	}else{
-		console.log("ERROR - unit measurement not found");
-		numUnit = "";
-	}
-	
-	var tile = new sap.m.StandardTile(iconName.replace(/"([^"]+(?="))"/g, '$1') + "SensorTile", {
-		numberUnit : numUnit,
-		infoState : "Success",
-		icon : sap.ui.core.IconPool.getIconURI(iconName),
-		press : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");},
-		tap   : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor");}
-	});
-	tile.setModel(oModel);
-
-	// All the bindings
-	tile.bindProperty("title", MODEL +  + "/description");
-	tile.bindProperty("info", MODEL + sensorNumber + "/device");
-	tile.bindProperty("number", MODEL + sensorNumber + "/lastMeasurement/" + iconName.replace(/"([^"]+(?="))"/g, '$1'), function(bValue) {
-		returnVal = Math.round(bValue * 10) / 10 ;
-		
-		if(strcmp2("temperature", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
-			returnVal = returnVal + "\u00b0";
-		}else{
-			
-		}
-		
-		return returnVal;
-	});
-	return tile;
-
-};
-
-var buildStandaloneSensorTile = function(oModel, sensorNumber, sensorId, measurementType){
-
-	debugger;
-	
-	var numUnit = "";
-	
-	if(strcmp2("temperature", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
-		numUnit = "Celsius";
-	}else{
-		numUnit = "Percentage";
-	}
-	
-	var tile = new sap.m.StandardTile("myStandaloneSensorTile" + sensorNumber, {
-		numberUnit : numUnit,
-		infoState : "Success",
-		icon : sap.ui.core.IconPool.getIconURI(measurementType),
-		tap : function() {
-			sendSensorValue(sensorNumber, sensorId);
-		},
-		press : function() {
-			sendSensorValue(sensorNumber, sensorId);
-		}
-		
-	});
-	tile.setModel(oModel);
-
-	// All the bindings
-	tile.bindProperty("title", MODEL + sensorNumber + "/description");
-	tile.bindProperty("info", MODEL + sensorNumber + "/device");
-	tile.bindProperty("number", MODEL + sensorNumber + "/lastMeasurement/" + measurementType.replace(/"([^"]+(?="))"/g, '$1'), function(bValue) {
-		returnVal = Math.round(bValue * 10) / 10 ;
-		
-		if(strcmp2("temperature", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
-			returnVal = returnVal + "\u00b0";
-		}else{
-			
-		}
-		
-		return returnVal;
-	});
-	return tile;
-	
-};
-
 
 /*-- Function for creating the TEMPERATURE CHARTS OF A SENSOR --*/
 var getChartForMetric = function(id, model, measurementType, bindingName, minValue, maxValue){
 
-	debugger;
-	
 	var oChart = new sap.makit.Chart(id, {
      height: "90%",
      width : "100%",
@@ -263,7 +137,7 @@ var updateModelOfUiObject = function(id, model){
 /*-- THE MAIN APP											--*/
 /*-- ###################################################### --*/
 function mainFunction(){
-	debugger;
+	
 	console.log("entered main function...");
 	
 	jQuery.sap.require("sap.ui.core.IconPool");
@@ -281,41 +155,42 @@ function mainFunction(){
 	
 	var appLink = window.location.href;
 	var oModelSensorData = getModelFromURL(MODEL);
+	
+	var measurements = oModelSensorData.getData();
+	var measurementsLength = Object.keys( measurements ).length-1;
 
-	debugger;
+	//for (var measurementNumber = 0; measurements.hasOwnProperty('Measurement'+measurementNumber); measurementNumber++){
+		//Temperature tile
+		//var path = "/Measurement"+measurementNumber;
+		var path = "/Measurement"+measurementsLength;
+		var sensorTile = buildTemperatureTileToChart(app, oModelSensorData, path);
+	 	//var chart_sensor = getChartForMetric("temperature_chart_sensor" + sensorNumber, oModelSensorData, "temperature", MODEL +  sensorNumber + "/measurements", "","");
+		//var detailPageChart_sensor = buildChartPage("temperature_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 	
+		mainPage.addContent(sensorTile);
+		//app.addPage(detailPageChart_sensor);
+		
+		//Humidity tile
+		//var sensorTile = buildSensorTileToChart(app, oModelSensorData, sensorNumber , "humidity");
+	 	//var chart_sensor = getChartForMetric("humidity_chart_sensor" + sensorNumber, oModelSensorData, "humidity", MODEL +  sensorNumber + "/measurements", "","");
+		//var detailPageChart_sensor = buildChartPage("humidity_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 	
-	var sensors = oModelSensorData.getData();
-	
-	//Temperature tile
-	var sensorTile = buildTemperatureTileToChart(app, oModelSensorData);
- 	//var chart_sensor = getChartForMetric("temperature_chart_sensor" + sensorNumber, oModelSensorData, "temperature", MODEL +  sensorNumber + "/measurements", "","");
-	//var detailPageChart_sensor = buildChartPage("temperature_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
+		//mainPage.addContent(sensorTile);
+		//app.addPage(detailPageChart_sensor);
+	//}
 
-	mainPage.addContent(sensorTile);
-	app.addPage(detailPageChart_sensor);
-	
-	//Humidity tile
-	//var sensorTile = buildSensorTileToChart(app, oModelSensorData, sensorNumber , "humidity");
- 	//var chart_sensor = getChartForMetric("humidity_chart_sensor" + sensorNumber, oModelSensorData, "humidity", MODEL +  sensorNumber + "/measurements", "","");
-	//var detailPageChart_sensor = buildChartPage("humidity_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
-
-	//mainPage.addContent(sensorTile);
-	//app.addPage(detailPageChart_sensor);
-
-	
 	app.addPage(mainPage);
 	app.setBackgroundImage("images/sidi.jpg");
 	app.setBackgroundRepeat(true);
 	app.placeAt("content");
 
 	//Update the values in the tiles and charts every x ms
-	var updateInMilliseconds = 2000;
+	/*var updateInMilliseconds = 2000;
 	setInterval(function() {
-		var oModelSensorData = getModelFromURL("/sensordata");
+		var oModelSensorData = getModelFromURL(MODEL);
 		updateDataModel(oModelSensorData);
 
-		var sensors = oModelSensorData.getData();
+		var measurements = oModelSensorData.getData();
 		for (var sensorNumber = 0; sensors.hasOwnProperty('sensor'+sensorNumber); sensorNumber++){
 			updateModelOfUiObject("temperatureSensorTile" + sensorNumber,oModelSensorData);
 			updateModelOfUiObject("temperature_chart_sensor" + sensorNumber,oModelSensorData);
@@ -324,5 +199,5 @@ function mainFunction(){
 			updateModelOfUiObject("humidity_chart_sensor" + sensorNumber,oModelSensorData);
 		}
 				
-	}, updateInMilliseconds);
+	}, updateInMilliseconds);*/
 }
