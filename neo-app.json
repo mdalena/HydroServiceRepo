@@ -5,9 +5,9 @@
                 "path": "/measurement",
                 "target": {
                                 "type": "destination",
-                                "name": "HydroserviceODataService"
+                                "name": "PredictiveIoTODataService"
                 },
-                "description": "Hydroservice Data Sensor Dashboard"
+                "description": "Predictive IoT Data Sensor Dashboard"
         },
 {
                 "path": "/sapui5",

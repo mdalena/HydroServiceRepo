@@ -18,9 +18,6 @@ const vibrationIcon = "";
 const humidityIcon = "";
 const cloggedIcon = "";
 
-//const JSON_FAKE_MODEL = "{\"TEMPERATURE\":[{\"storedAt\":\"2016-09-13 15:53:37.565\",\"value\":49.70450008082865},{\"storedAt\":\"2016-09-13 15:54:22.239\",\"value\":46.761483011614246},{\"storedAt\":\"2016-09-13 15:54:31.304\",\"value\":49.602693307494846}],\"PRESSURE1\":[{\"storedAt\":\"2016-09-13 15:53:37.565\",\"value\":115.29260642561148},{\"storedAt\":\"2016-09-13 15:54:22.239\",\"value\":115.09299407897575},{\"storedAt\":\"2016-09-13 15:54:31.304\",\"value\":118.88586932476329}],\"PRESSURE2\":[{\"storedAt\":\"2016-09-13 15:53:37.565\",\"value\":44.75406852678511},{\"storedAt\":\"2016-09-13 15:54:22.239\",\"value\":47.48943423965213},{\"storedAt\":\"2016-09-13 15:54:31.304\",\"value\":43.692587028152936}],\"VIBRATION\":[{\"storedAt\":\"2016-09-13 15:53:37.565\",\"value\":0},{\"storedAt\":\"2016-09-13 15:54:22.239\",\"value\":0},{\"storedAt\":\"2016-09-13 15:54:31.304\",\"value\":0}],\"HUMIDITY\":[{\"storedAt\":\"2016-09-13 15:53:37.565\",\"value\":6},{\"storedAt\":\"2016-09-13 15:54:22.239\",\"value\":2},{\"storedAt\":\"2016-09-13 15:54:31.304\",\"value\":3}],\"CLOGGED\":[{\"storedAt\":\"2016-09-13 15:53:37.565\",\"value\":1},{\"storedAt\":\"2016-09-13 15:54:22.239\",\"value\":3},{\"storedAt\":\"2016-09-13 15:54:31.304\",\"value\":0}]}";
-const JSON_FAKE_MODEL = "{\"level0\":{\"level1\":[{\"storedAt\":\"2016-09-13 15:53:37.565\",\"tvalue\":49.70450008082865,\"p1value\":115.29260642561148,\"p2value\":44.75406852678511,\"vvalue\":0,\"hvalue\":6,\"cvalue\":1},{\"storedAt\":\"2016-09-13 15:54:22.239\",\"value\":46.761483011614246,\"p1value\":115.09299407897575,\"p2value\":47.48943423965213,\"vvalue\":0,\"hvalue\":2,\"cvalue\":2},{\"storedAt\":\"2016-09-13 15:54:31.304\",\"value\":49.602693307494846,\"p1value\":118.88586932476329,\"p2value\":43.692587028152936,\"vvalue\":0,\"hvalue\":3,\"cvalue\":3}]}}";
-
 /*-- ###################################################### --*/
 /*-- UTILITY functions										--*/
 /*-- ###################################################### --*/
@@ -173,13 +170,14 @@ var buildCloggedTileToChart = function(app, oModel, path){
 
 	// All the bindings
 	//tile.bindProperty("title", "Filter");
+	debugger;
 	tile.bindProperty("number", path + CLOGGED);
 
 	return tile;
 }
 
 /*-- Function for creating the TEMPERATURE CHARTS OF A SENSOR --*/
-var getChartForMetric = function(id, model, measurementType, minValue, maxValue){
+var getChartForMetric = function(id, model, measurementType, bindingName, minValue, maxValue){
 	var oChart = new sap.makit.Chart(id, {
 		height: "90%",
 		width : "100%",
@@ -191,13 +189,13 @@ var getChartForMetric = function(id, model, measurementType, minValue, maxValue)
  	});
  	
 	oChart.addColumn(new sap.makit.Column({name:"storedAt", value:"{storedAt}"}));
-	oChart.addColumn(new sap.makit.Column({name: measurementType, value:"{tvalue}", type:"number"}));
+	oChart.addColumn(new sap.makit.Column({name: measurementType, value:"{" + measurementType.replace(/"([^"]+(?="))"/g, '$1') + "}", type:"number"}));
 	oChart.setModel(model);
-	var bindingName = "/"+measurementType;
-	oChart.bindRows("/level0/level1");
+	oChart.bindRows(bindingName);
  	
  	return oChart;
 };	
+
 
 /*-- Function to update the model of an UI object --*/
 var updateModelOfUiObject = function(id, model){
@@ -213,7 +211,7 @@ function mainFunction(){
 	
 	console.log("entered main function...");
 	
-	//debugger;
+	debugger;
 	
 	jQuery.sap.require("sap.ui.core.IconPool");
 	jQuery.sap.require("sap.ui.core.Icon");
@@ -226,27 +224,21 @@ function mainFunction(){
 
 	
 	// Now create the page and place it into the HTML document
-	var mainPage = buildMainPage(idPageMain, "Preditive IoT Data Sensor Dashboard");
+	var mainPage = buildMainPage(idPageMain, "Hydroservice Data Sensor Dashboard");
 	
 	var appLink = window.location.href;
 	var oModelSensorData = getModelFromURL(MODEL);
 	
 	var measurements = oModelSensorData.getData();
 	var measurementsLength = Object.keys( measurements ).length-1;
-	
-	var fakeJsonModel = new sap.ui.model.json.JSONModel();
-	fakeJsonModel.setData(JSON_FAKE_MODEL);
-
-	debugger;
-	//getSensorMeasurement(MODEL, "temperature", measurements);
 
 	//for (var measurementNumber = 0; measurements.hasOwnProperty('Measurement'+measurementNumber); measurementNumber++){
 		//Temperature tile
 		//var path = "/Measurement"+measurementNumber;
 		var path = "/Measurement"+measurementsLength;
 		var sensorTile = buildTemperatureTileToChart(app, oModelSensorData, path);
-	 	var chart_sensor = getChartForMetric("Temperature_chart", fakeJsonModel, "TEMPERATURE", "","");
-		var detail_chart_sensor = buildChartPage("Temperature_detail_chart", fakeJsonModel, app, "TEMPERATURE", chart_sensor);
+	 	var chart_sensor = getChartForMetric("Temperature_chart", oModelSensorData, "temperature", ITEM, "","");
+		var detail_chart_sensor = buildChartPage("Temperature_detail_chart", oModelSensorData, app, path, chart_sensor);
 	
 		mainPage.addContent(sensorTile);
 		app.addPage(detail_chart_sensor);
