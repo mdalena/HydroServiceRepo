@@ -1,0 +1,36 @@
+@font-face {
+	font-family: 'custom-icons';
+	src: url('./images');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'custom-icons';
+	display: inline-block;
+	font: normal normal normal 14px;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-humidity:before {
+	content: "\ci001";
+}
+
+.icon-pressure:before {
+	content: "\ci002";
+}
+
+.icon-vibration:before {
+	content: "\ci003";
+}
+
+.icon-temperature:before {
+	content: "\ci004";
+}
+
+.icon-filter:before {
+	content: "\ci005";
+}
