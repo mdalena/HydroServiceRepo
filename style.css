@@ -29,8 +29,24 @@
   content: "\ci005";  
 }
 
+
+.sapMStdTileNumS,
+.sapMStdTileNumM,
+.sapMStdTileNum{
+  font-size: 2rem !important;
+}
+
+.sapMStdTileNumUnit{
+    font-size: 1.5rem !important;
+}
+
+.sapMStdTileBottomRow{
+  padding-top: 20px !important;
+}
+
 .sapMStdTileTitle{
   color: #000 !important;
+  font-size: 1.3rem !important;
   background-size: 30px;
   background-repeat: no-repeat;
   background-position: top right;
