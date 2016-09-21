@@ -29,15 +29,16 @@
   content: "\ci005";  
 }
 
-
 .sapMStdTileNumS,
 .sapMStdTileNumM,
 .sapMStdTileNum{
   font-size: 2rem !important;
+  color: #000 !important;
 }
 
 .sapMStdTileNumUnit{
     font-size: 1.5rem !important;
+  color: #000 !important;
 }
 
 .sapMStdTileBottomRow{
@@ -53,23 +54,24 @@
 } 
 
 
-#TemperatureSensorTile-title.sapMStdTileTitle{
+/*TO BE IGNORED*/
+#temperatureSensorTile0-title.sapMStdTileTitle{
   background-image: url('images/icon-temperature.png');
 } 
 
-#Pressure1SensorTile-title.sapMStdTileTitle,
-#Pressure2SensorTile-title.sapMStdTileTitle{
+#pressure1SensorTile0-title.sapMStdTileTitle,
+#pressure2SensorTile0-title.sapMStdTileTitle{
   background-image: url('images/icon-pressure.png');
 }
 
-#VibrationSensorTile-title.sapMStdTileTitle{
+#vibrationSensorTile0-title.sapMStdTileTitle{
   background-image: url('images/icon-vibration.png');
 }
 
-#HumiditySensorTile-title.sapMStdTileTitle{
+#humiditySensorTile0-title.sapMStdTileTitle{
   background-image: url('images/icon-humidity.png');
 }
 
-#FilterSensorTile-title.sapMStdTileTitle{
+#cloggedSensorTile0-title.sapMStdTileTitle{
   background-image: url('images/icon-filter.png');
 }

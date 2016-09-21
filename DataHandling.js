@@ -88,6 +88,8 @@ var buildSensorTileToChart = function(app, oModel, sensorNumber, iconName) {
 		numUnit = "C";
 	}else if(strcmp2("humidity", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
 		numUnit = "%";
+	}else if(strcmp2("pressure", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
+		numUnit = "BAR";
 	}else if(strcmp2("vibration", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
 		numUnit = "MMPS";
 	}
@@ -95,15 +97,16 @@ var buildSensorTileToChart = function(app, oModel, sensorNumber, iconName) {
 	var tile = new sap.m.StandardTile(iconName.replace(/"([^"]+(?="))"/g, '$1') + "SensorTile" + sensorNumber, {
 		numberUnit : numUnit,
 		infoState : "Success",
-		icon : sap.ui.core.IconPool.getIconURI(iconName),
+		//icon : sap.ui.core.IconPool.getIconURI(iconName),
+		title: iconName,
 		press : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor" + sensorNumber);},
 		tap   : function(oEvent) { app.to(iconName.replace(/"([^"]+(?="))"/g, '$1') + "_detailPageChart_sensor" + sensorNumber);}
 	});
 	tile.setModel(oModel);
 
 	// All the bindings
-	tile.bindProperty("title", "/sensor" + sensorNumber + "/description");
-	tile.bindProperty("info", "/sensor" + sensorNumber + "/device");
+	//tile.bindProperty("title", "/sensor" + sensorNumber + "/description");
+	//tile.bindProperty("info", "/sensor" + sensorNumber + "/device");
 	tile.bindProperty("number", "/sensor" + sensorNumber + "/lastMeasurement/" + iconName.replace(/"([^"]+(?="))"/g, '$1'), function(bValue) {
 		returnVal = Math.round(bValue * 1000) / 1000 ;
 		
@@ -120,13 +123,11 @@ var buildSensorTileToChart = function(app, oModel, sensorNumber, iconName) {
 };
 
 var buildStandaloneSensorTile = function(oModel, sensorNumber, sensorId, measurementType){
-
-	
-	
 	var tile = new sap.m.StandardTile("myStandaloneSensorTile" + sensorNumber, {
 		numberUnit : "Celsius",
 		infoState : "Success",
-		icon : sap.ui.core.IconPool.getIconURI(measurementType),
+		title: measurementType,
+		//icon : sap.ui.core.IconPool.getIconURI(measurementType),
 		tap : function() {
 			sendSensorValue(sensorNumber, sensorId);
 		},
@@ -138,8 +139,8 @@ var buildStandaloneSensorTile = function(oModel, sensorNumber, sensorId, measure
 	tile.setModel(oModel);
 
 	// All the bindings
-	tile.bindProperty("title", "/sensor" + sensorNumber + "/description");
-	tile.bindProperty("info", "/sensor" + sensorNumber + "/device");
+	//tile.bindProperty("title", "/sensor" + sensorNumber + "/description");
+	//tile.bindProperty("info", "/sensor" + sensorNumber + "/device");
 	tile.bindProperty("number", "/sensor" + sensorNumber + "/lastMeasurement/" + measurementType.replace(/"([^"]+(?="))"/g, '$1'), function(bValue) {
 		returnVal = Math.round(bValue * 1000) / 1000 ;
 		return returnVal + "\u00b0";
@@ -150,10 +151,7 @@ var buildStandaloneSensorTile = function(oModel, sensorNumber, sensorId, measure
 
 
 /*-- Function for creating the TEMPERATURE CHARTS OF A SENSOR --*/
-var getChartForMetric = function(id, model, measurementType, bindingName, minValue, maxValue){
-
-	
-	
+var getChartForMetric = function(id, model, measurementType, bindingName, minValue, maxValue){	
 	var oChart = new sap.makit.Chart(id, {
      height: "90%",
      width : "100%",
@@ -199,7 +197,7 @@ function mainFunction(){
 
 	
 	// Now create the page and place it into the HTML document
-	var mainPage = buildMainPage(idPageMain, "DHT11 - Humidty and Temperature Monitor");
+	var mainPage = buildMainPage(idPageMain, "Preditive IoT Data Sensor Dashboard");
 	
 	var appLink = window.location.href;
 	var oModelSensorData = getModelFromURL("/sensordata");
