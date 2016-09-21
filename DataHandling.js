@@ -296,7 +296,7 @@ function mainFunction(){
 	mainPage.addContent(tileContainer);
 	mainPage.addContent(emptyContainer);
 	app.addPage(mainPage);
-	app.setBackgroundImage("images/sidi.jpg");
+	app.setBackgroundImage("images/wallpaper.jpg");
 	app.setBackgroundRepeat(true);
 	app.placeAt("content");
 	
