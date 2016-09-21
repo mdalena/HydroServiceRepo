@@ -1,4 +1,4 @@
- @font-face {  
+@font-face {  
   font-family: 'custom-icons';  
   src:url('./images');  
   font-weight: normal;  
@@ -27,6 +27,10 @@
 }
 .icon-filter:before {  
   content: "\ci005";  
+}
+
+.alert{
+	color: #FF0000 !important;
 }
 
 .sapMStdTileNumS,

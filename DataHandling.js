@@ -79,11 +79,8 @@ var buildChartPage = function(id, oModel, app, sensorNumber, chart) {
 /*-- Functions for creating the SENSOR TILES of the app --*/
 
 var buildSensorTileToChart = function(app, oModel, sensorNumber, iconName) {
-
-	
-	
 	var numUnit = "";
-	
+
 	if(strcmp2("temperature", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
 		numUnit = "C";
 	}else if(strcmp2("humidity", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
@@ -149,6 +146,24 @@ var buildStandaloneSensorTile = function(oModel, sensorNumber, sensorId, measure
 	
 };
 
+var buildInformationBox = function(oModel, measurementType){
+	debugger;
+	var oTable = new sap.ui.table.Table();
+	
+	// define the Table columns and the binding values
+	oTable.addColumn(new sap.ui.table.Column({
+		label: new sap.ui.commons.Label({text: "Measurement type"}), 
+		template: new sap.ui.commons.TextView({text:measurementType})
+	}));
+	
+	oTable.addColumn(new sap.ui.table.Column({
+		label: new sap.ui.commons.Label({text: "Date"}), 
+		template: new sap.ui.commons.TextField({value: "Sep 1, 2016 10:50:58"})
+	}));
+	oTable.setModel(oModel);
+	oTable.placeAt("myApp");
+
+};
 
 /*-- Function for creating the TEMPERATURE CHARTS OF A SENSOR --*/
 var getChartForMetric = function(id, model, measurementType, bindingName, minValue, maxValue){	
@@ -179,6 +194,14 @@ var updateModelOfUiObject = function(id, model){
 
 };
 
+var checkValue = function(value){
+	var check = false;
+	if(value > 180){
+		check = true;
+	}
+	return check;
+};
+
 /*-- ###################################################### --*/
 /*-- THE MAIN APP											--*/
 /*-- ###################################################### --*/
@@ -203,7 +226,8 @@ function mainFunction(){
 	var oModelSensorData = getModelFromURL("/sensordata");
 
 	
-	
+	var tileContainer = new sap.m.TileContainer({});
+	var emptyContainer = new sap.m.TileContainer({});
 	
 	var sensors = oModelSensorData.getData();
 	for (var sensorNumber = 0; sensors.hasOwnProperty('sensor'+sensorNumber); sensorNumber++){
@@ -212,7 +236,8 @@ function mainFunction(){
 	 	var chart_sensor = getChartForMetric("temperature_chart_sensor" + sensorNumber, oModelSensorData, "temperature", "/sensor" +  sensorNumber + "/measurements", "","");
 		var detailPageChart_sensor = buildChartPage("temperature_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
-		mainPage.addContent(sensorTile);
+		//mainPage.addContent(sensorTile);
+		tileContainer.addTile(sensorTile);
 		app.addPage(detailPageChart_sensor);
 		
 		//Humidity tile
@@ -220,7 +245,8 @@ function mainFunction(){
 	 	var chart_sensor = getChartForMetric("humidity_chart_sensor" + sensorNumber, oModelSensorData, "humidity", "/sensor" +  sensorNumber + "/measurements", "","");
 		var detailPageChart_sensor = buildChartPage("humidity_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
-		mainPage.addContent(sensorTile);
+		//mainPage.addContent(sensorTile);
+		tileContainer.addTile(sensorTile);
 		app.addPage(detailPageChart_sensor);
 		
 		//Pressure1 tiles
@@ -228,7 +254,13 @@ function mainFunction(){
 	 	var chart_sensor = getChartForMetric("pressure1_chart_sensor" + sensorNumber, oModelSensorData, "pressure1", "/sensor" +  sensorNumber + "/measurements", "","");
 		var detailPageChart_sensor = buildChartPage("pressure1_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
-		mainPage.addContent(sensorTile);
+		var alert = checkValue(sensorTile.getNumber());
+		if(alert){
+			sensorTile.addStyleClass("alert");
+		}
+
+		//mainPage.addContent(sensorTile);
+		tileContainer.addTile(sensorTile);
 		app.addPage(detailPageChart_sensor);
 		
 		//Pressure2 tiles
@@ -236,7 +268,8 @@ function mainFunction(){
 	 	var chart_sensor = getChartForMetric("pressure2_chart_sensor" + sensorNumber, oModelSensorData, "pressure2", "/sensor" +  sensorNumber + "/measurements", "","");
 		var detailPageChart_sensor = buildChartPage("pressure2_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
-		mainPage.addContent(sensorTile);
+		//mainPage.addContent(sensorTile);
+		tileContainer.addTile(sensorTile);
 		app.addPage(detailPageChart_sensor);
 		
 		//Vibration tiles
@@ -244,7 +277,8 @@ function mainFunction(){
 	 	var chart_sensor = getChartForMetric("vibration_chart_sensor" + sensorNumber, oModelSensorData, "vibration", "/sensor" +  sensorNumber + "/measurements", "","");
 		var detailPageChart_sensor = buildChartPage("vibration_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
-		mainPage.addContent(sensorTile);
+		//mainPage.addContent(sensorTile);
+		tileContainer.addTile(sensorTile);
 		app.addPage(detailPageChart_sensor);
 		
 		//Clogged tiles
@@ -252,15 +286,24 @@ function mainFunction(){
 	 	var chart_sensor = getChartForMetric("clogged_chart_sensor" + sensorNumber, oModelSensorData, "clogged", "/sensor" +  sensorNumber + "/measurements", "","");
 		var detailPageChart_sensor = buildChartPage("clogged_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
-		mainPage.addContent(sensorTile);
+		//mainPage.addContent(sensorTile);
+		tileContainer.addTile(sensorTile);
 		app.addPage(detailPageChart_sensor);
 	}
 	
+	
+
+	mainPage.addContent(tileContainer);
+	mainPage.addContent(emptyContainer);
 	app.addPage(mainPage);
 	app.setBackgroundImage("images/sidi.jpg");
 	app.setBackgroundRepeat(true);
 	app.placeAt("content");
-
+	
+	var infoBox = buildInformationBox(oModelSensorData, "pressure1");
+	mainPage.addContent(infoBox);
+	app.addPage(mainPage);
+	
 	//Update the values in the tiles and charts every x ms
 	var updateInMilliseconds = 2000;
 	setInterval(function() {
