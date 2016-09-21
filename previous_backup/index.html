@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	
+		<title>Predicitve IoT Data Sensor Dashboard</title>
+	
+		<link rel="stylesheet" type="text/css" href="style.css">
+	
+	<!-- You might want to use this bootstrap instead for local testing  -->
+	<script src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+			type="text/javascript" id="sap-ui-bootstrap"
+			data-sap-ui-libs="sap.ui.commons, sap.suite.ui.commons, sap.m, sap.ui.core, sap.makit"
+			data-sap-ui-theme="sap_bluecrystal">
+	</script>
+	<!-- 
+	<script src="/sapui5/sap-ui-core.js"
+		type="text/javascript" id="sap-ui-bootstrap"
+		data-sap-ui-libs="sap.ui.commons, sap.suite.ui.commons, sap.m, sap.ui.core, sap.makit"
+		data-sap-ui-theme="sap_bluecrystal">
+		
+	</script>
+	-->
+	
+	<!-- GAUGE
+	
+	<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+		<script type="text/javascript" src="gauge.js"></script>
+
+		<script>
+						
+				
+			var gauges = [];
+			
+			function createGauge(name, label, min, max)
+			{
+				var config = 
+				{
+					size: 125,
+					label: label,
+					min: undefined != min ? min : 0,
+					max: undefined != max ? max : 100,
+					minorTicks: 5
+				}
+				
+				var range = config.max - config.min;
+				config.greenZones = [{ from: config.min, to: config.min + range*0.75 }];
+				config.yellowZones = [{ from: config.min + range*0.75, to: config.min + range*0.9 }];
+				config.redZones = [{ from: config.min + range*0.9, to: config.max }];
+				
+				gauges[name] = new Gauge(name + "GaugeContainer", config);
+				gauges[name].render();
+			}
+			
+			function createGauges()
+			{
+				createGauge("memory", "Memory");
+				createGauge("cpu", "CPU");
+				createGauge("network", "Network");
+				//createGauge("test", "Test", -50, 50 );
+			}
+			
+			function updateGauges()
+			{
+				for (var key in gauges)
+				{
+					var value = getRandomValue(gauges[key])
+					gauges[key].redraw(value);
+				}
+			}
+			
+			function getRandomValue(gauge)
+			{
+				var overflow = 0; //10;
+				return gauge.config.min - overflow + (gauge.config.max - gauge.config.min + overflow*2) *  Math.random();
+			}
+			
+			function initialize()
+			{
+				createGauges();
+				setInterval(updateGauges, 5000);
+			}
+			
+		</script>
+	
+	-->
+
+	<!-- ###################################################### -->
+	<!-- THE MAIN APP											-->
+	<!-- ###################################################### -->
+	<script src="DataHandling.js"></script>
+	<script type="text/javascript">
+		mainFunction();
+	</script>
+</head>
+
+	<body class="sapUiBody">
+		<div id="content"></div>
+	</body>
+	
+	<!-- 
+	<body onload="initialize()">
+		<span id="memoryGaugeContainer"></span>
+		<span id="cpuGaugeContainer"></span>
+		<span id="networkGaugeContainer"></span>
+		<span id="testGaugeContainer"></span>
+</body>
+	
+	 -->
+</html>

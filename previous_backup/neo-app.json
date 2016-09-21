@@ -2,10 +2,10 @@
     "authenticationMethod": "none",
     "routes": [
         {
-                "path": "/sensordata",
+                "path": "/measurement",
                 "target": {
                                 "type": "destination",
-                                "name": "raspberryiot"
+                                "name": "PredictiveIoTODataService"
                 },
                 "description": "Predictive IoT Data Sensor Dashboard"
         },

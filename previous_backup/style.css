@@ -1,0 +1,75 @@
+ @font-face {  
+  font-family: 'custom-icons';  
+  src:url('./images');  
+  font-weight: normal;  
+  font-style: normal;  
+}  
+[class^="icon-"], [class*=" icon-"] {  
+  font-family: 'custom-icons';  
+  display: inline-block;
+  font: normal normal normal 14px;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}  
+.icon-humidity:before {  
+  content: "\ci001";  
+}
+.icon-pressure:before {  
+  content: "\ci002";  
+}
+.icon-vibration:before {  
+  content: "\ci003";  
+}
+.icon-temperature {  
+  content: "\ci004"
+}
+.icon-filter:before {  
+  content: "\ci005";  
+}
+
+
+.sapMStdTileNumS,
+.sapMStdTileNumM,
+.sapMStdTileNum{
+  font-size: 2rem !important;
+}
+
+.sapMStdTileNumUnit{
+    font-size: 1.5rem !important;
+}
+
+.sapMStdTileBottomRow{
+  padding-top: 20px !important;
+}
+
+.sapMStdTileTitle{
+  color: #000 !important;
+  font-size: 1.3rem !important;
+  background-size: 30px;
+  background-repeat: no-repeat;
+  background-position: top right;
+} 
+
+
+#TemperatureSensorTile-title.sapMStdTileTitle{
+  background-image: url('images/icon-temperature.png');
+} 
+
+#Pressure1SensorTile-title.sapMStdTileTitle,
+#Pressure2SensorTile-title.sapMStdTileTitle{
+  background-image: url('images/icon-pressure.png');
+}
+
+#VibrationSensorTile-title.sapMStdTileTitle{
+  background-image: url('images/icon-vibration.png');
+}
+
+#HumiditySensorTile-title.sapMStdTileTitle{
+  background-image: url('images/icon-humidity.png');
+}
+
+#FilterSensorTile-title.sapMStdTileTitle{
+  background-image: url('images/icon-filter.png');
+}
