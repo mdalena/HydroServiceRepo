@@ -88,7 +88,7 @@ var buildSensorTileToChart = function(app, oModel, sensorNumber, iconName) {
 		numUnit = "C";
 	}else if(strcmp2("humidity", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
 		numUnit = "%";
-	}else if(strcmp2("pressure", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
+	}else if(strcmp2("pressure1", iconName.replace(/"([^"]+(?="))"/g, '$1')) || strcmp2("pressure2", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
 		numUnit = "BAR";
 	}else if(strcmp2("vibration", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
 		numUnit = "MMPS";
