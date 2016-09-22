@@ -254,10 +254,10 @@ function mainFunction(){
 	 	var chart_sensor = getChartForMetric("pressure1_chart_sensor" + sensorNumber, oModelSensorData, "pressure1", "/sensor" +  sensorNumber + "/measurements", "","");
 		var detailPageChart_sensor = buildChartPage("pressure1_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
-		var alert = checkValue(sensorTile.getNumber());
-		if(alert){
-			sensorTile.addStyleClass("alert");
-		}
+//		var alert = checkValue(sensorTile.getNumber());
+//		if(alert){
+//			sensorTile.addStyleClass("alert");
+//		}
 
 		//mainPage.addContent(sensorTile);
 		tileContainer.addTile(sensorTile);
