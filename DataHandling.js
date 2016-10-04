@@ -53,10 +53,11 @@ function updateDataModel(model){
 /*-- ###################################################### --*/
 /*-- Functions for the MAIN PAGE of the app --*/
 
-var buildMainPage = function(id, title) {
+var buildPage = function(app, id, title, showNavButton) {
 	var page = new sap.m.Page(id, {
 		title : title,
-		showNavButton : false
+		showNavButton : showNavButton,
+		navButtonPress: function(){app.back();}
 	});
 
 	return page;
@@ -65,7 +66,8 @@ var buildMainPage = function(id, title) {
 var buildChartPage = function(id, oModel, app, sensorNumber, chart) {
 
 	var chartPage = new sap.m.Page(id , {
-		showNavButton: true, navButtonPress: function(){app.back();},
+		showNavButton: true, 
+		navButtonPress: function(){app.back();},
 		content : [chart]
 	});	
 	chartPage.setModel(oModel);
@@ -186,6 +188,19 @@ var getChartForMetric = function(id, model, measurementType, bindingName, minVal
 };	
 
 
+var buildSiteTile = function(id, tileTitle, idPageTo){	
+	var tile = new sap.m.CustomTile(id, {		
+		title: tileTitle,
+		/*content : customLayout,*/
+		press : function(oEvent) { app.to(idPageTo)},
+		tap   : function(oEvent) { app.to(idPageTo)}
+	});
+	
+	/*var customLayout = new sap.ui.commons.layout.VerticalLayout("customLayout ", {
+		content: 
+	});*/
+}
+
 /*-- Function to update the model of an UI object --*/
 
 var updateModelOfUiObject = function(id, model){
@@ -213,21 +228,44 @@ function mainFunction(){
 	jQuery.sap.require("sap.ui.core.Icon");
 	jQuery.sap.declare("sap.ui.customized.FontIconContainer");
 
-	var idPageMain = "main";
+	var idWelcomePage = "welcome";
+	var idSitePage = "site";
+	var idSensorPage = "sensor";
+	
+	var showNavButton = false;
+	var tileContainer = new sap.m.TileContainer({});
+	
 	var app = new sap.m.App("myApp", {
-		initialPage : idPageMain
+		initialPage : idWelcomePage
 	}); 
 
-	
-	// Now create the page and place it into the HTML document
-	var mainPage = buildMainPage(idPageMain, "Preditive IoT Data Sensor Dashboard");
-	
 	var appLink = window.location.href;
 	var oModelSensorData = getModelFromURL("/sensordata");
-
 	
-	var tileContainer = new sap.m.TileContainer({});
-	var emptyContainer = new sap.m.TileContainer({});
+	
+	// Now create the page and place it into the HTML document
+	var welcomePage = buildPage(app, idWelcomePage, "Preditive IoT Service", showNavButton);
+	
+	for(var i=0; i<4, i++){
+		var sensorTile = buildSiteTile();
+		var tileToPage = bindPageToTile();
+	}
+	
+	
+	mainPage.addContent(tileContainer);
+	app.addPage(welcomePage);
+	app.setBackgroundImage("images/wallpaper.jpg");
+	app.setBackgroundRepeat(true);
+	app.placeAt("content");
+	
+	showNavButton = true;
+	var mainSitePage = buildPage(app, idSitePage, "Preditive IoT Site 1", showNavButton);
+	
+	var welcomePage = buildPage(app, idSensorPage, "Preditive IoT Data Sensor Dashboard", showNavButton);
+	
+	
+	
+
 	
 	var sensors = oModelSensorData.getData();
 	for (var sensorNumber = 0; sensors.hasOwnProperty('sensor'+sensorNumber); sensorNumber++){
@@ -300,9 +338,9 @@ function mainFunction(){
 	app.setBackgroundRepeat(true);
 	app.placeAt("content");
 	
-	var infoBox = buildInformationBox(oModelSensorData, "pressure1");
-	mainPage.addContent(infoBox);
-	app.addPage(mainPage);
+//	var infoBox = buildInformationBox(oModelSensorData, "pressure1");
+//	mainPage.addContent(infoBox);
+//	app.addPage(mainPage);
 	
 	//Update the values in the tiles and charts every x ms
 	var updateInMilliseconds = 2000;

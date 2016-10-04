@@ -59,6 +59,22 @@
 
 
 /*TO BE IGNORED*/
+[data-targeturl = "#SiteTile1"]{
+	background-image: url('images/site-active.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	/*background-size : 200px 200px;*/
+}
+[data-targeturl = "#SiteTile2"],
+[data-targeturl = "#SiteTile3"],
+[data-targeturl = "#SiteTile4"]{
+	background-image: url('images/site-inactive.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	/*background-size : 200px 200px;*/
+}
+
+
 #temperatureSensorTile0-title.sapMStdTileTitle{
   background-image: url('images/icon-temperature.png');
 } 
