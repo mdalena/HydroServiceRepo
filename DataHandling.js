@@ -188,18 +188,20 @@ var getChartForMetric = function(id, model, measurementType, bindingName, minVal
 };	
 
 
-var buildSiteTile = function(id, tileTitle, idPageTo){	
-	var tile = new sap.m.CustomTile(id, {		
-		title: tileTitle,
+var buildSiteTile = function(id, tileTitle, idPageTo, oModel){	
+	var tile = new sap.m.StandardTile(id, {		
+		title: tileTitle
 		/*content : customLayout,*/
-		press : function(oEvent) { app.to(idPageTo)},
-		tap   : function(oEvent) { app.to(idPageTo)}
+		/*press : function(oEvent) { app.to(idPageTo)},
+		tap   : function(oEvent) { app.to(idPageTo)}*/
 	});
-	
+	tile.setModel(oModel);
 	/*var customLayout = new sap.ui.commons.layout.VerticalLayout("customLayout ", {
 		content: 
 	});*/
-}
+	
+	return tile;
+};
 
 /*-- Function to update the model of an UI object --*/
 
@@ -244,24 +246,23 @@ function mainFunction(){
 	
 	
 	// Now create the page and place it into the HTML document
-	var welcomePage = buildPage(app, idWelcomePage, "Preditive IoT Service", showNavButton);
+	var welcomePage = buildPage(app, idWelcomePage, "Preditive IoT Service", showNavButton, oModelSensorData);
 	
-	for(var i=0; i<4, i++){
-		var sensorTile = buildSiteTile();
-		var tileToPage = bindPageToTile();
-	}
+
+	var sensorTile = buildSiteTile('SiteTile1', 'SiteTile1', '');
+	/*var tileToPage = bindPageToTile();*/
+	tileContainer.addTile(sensorTile);
 	
-	
-	mainPage.addContent(tileContainer);
+	welcomePage.addContent(tileContainer);
 	app.addPage(welcomePage);
 	app.setBackgroundImage("images/wallpaper.jpg");
 	app.setBackgroundRepeat(true);
 	app.placeAt("content");
 	
 	showNavButton = true;
-	var mainSitePage = buildPage(app, idSitePage, "Preditive IoT Site 1", showNavButton);
+/*	var mainSitePage = buildPage(app, idSitePage, "Preditive IoT Site 1", showNavButton);
 	
-	var welcomePage = buildPage(app, idSensorPage, "Preditive IoT Data Sensor Dashboard", showNavButton);
+	var welcomePage = buildPage(app, idSensorPage, "Preditive IoT Data Sensor Dashboard", showNavButton);*/
 	
 	
 	
@@ -331,9 +332,8 @@ function mainFunction(){
 	
 	
 
-	mainPage.addContent(tileContainer);
-	mainPage.addContent(emptyContainer);
-	app.addPage(mainPage);
+	idSensorPage.addContent(tileContainer);
+	app.addPage(idSensorPage);
 	app.setBackgroundImage("images/wallpaper.jpg");
 	app.setBackgroundRepeat(true);
 	app.placeAt("content");
