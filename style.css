@@ -59,7 +59,7 @@
 
 
 /*TO BE IGNORED*/
-[data-targeturl = "#SiteTile1"]{
+[data-targeturl = "#SiteTile1-title"]{
 	background-image: url('images/site-active.png');
 	background-repeat: no-repeat;
 	background-position: center;
@@ -74,8 +74,7 @@
 	/*background-size : 200px 200px;*/
 }
 
-
-#temperatureSensorTile0-title.sapMStdTileTitle{
+.sapMTileContent.sapMStdTileBottomRow.sapMStdTileTitle.iconTemperature{
   background-image: url('images/icon-temperature.png');
 } 
 

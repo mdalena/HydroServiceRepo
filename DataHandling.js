@@ -81,6 +81,7 @@ var buildChartPage = function(id, oModel, app, sensorNumber, chart) {
 /*-- Functions for creating the SENSOR TILES of the app --*/
 
 var buildSensorTileToChart = function(app, oModel, sensorNumber, iconName) {
+	debugger;
 	var numUnit = "";
 
 	if(strcmp2("temperature", iconName.replace(/"([^"]+(?="))"/g, '$1'))){
@@ -118,52 +119,6 @@ var buildSensorTileToChart = function(app, oModel, sensorNumber, iconName) {
 		return returnVal;
 	});
 	return tile;
-
-};
-
-var buildStandaloneSensorTile = function(oModel, sensorNumber, sensorId, measurementType){
-	var tile = new sap.m.StandardTile("myStandaloneSensorTile" + sensorNumber, {
-		numberUnit : "Celsius",
-		infoState : "Success",
-		title: measurementType,
-		//icon : sap.ui.core.IconPool.getIconURI(measurementType),
-		tap : function() {
-			sendSensorValue(sensorNumber, sensorId);
-		},
-		press : function() {
-			sendSensorValue(sensorNumber, sensorId);
-		}
-		
-	});
-	tile.setModel(oModel);
-
-	// All the bindings
-	//tile.bindProperty("title", "/sensor" + sensorNumber + "/description");
-	//tile.bindProperty("info", "/sensor" + sensorNumber + "/device");
-	tile.bindProperty("number", "/sensor" + sensorNumber + "/lastMeasurement/" + measurementType.replace(/"([^"]+(?="))"/g, '$1'), function(bValue) {
-		returnVal = Math.round(bValue * 1000) / 1000 ;
-		return returnVal + "\u00b0";
-	});
-	return tile;
-	
-};
-
-var buildInformationBox = function(oModel, measurementType){
-	debugger;
-	var oTable = new sap.ui.table.Table();
-	
-	// define the Table columns and the binding values
-	oTable.addColumn(new sap.ui.table.Column({
-		label: new sap.ui.commons.Label({text: "Measurement type"}), 
-		template: new sap.ui.commons.TextView({text:measurementType})
-	}));
-	
-	oTable.addColumn(new sap.ui.table.Column({
-		label: new sap.ui.commons.Label({text: "Date"}), 
-		template: new sap.ui.commons.TextField({value: "Sep 1, 2016 10:50:58"})
-	}));
-	oTable.setModel(oModel);
-	oTable.placeAt("myApp");
 
 };
 
@@ -230,6 +185,8 @@ function mainFunction(){
 	jQuery.sap.require("sap.ui.core.Icon");
 	jQuery.sap.declare("sap.ui.customized.FontIconContainer");
 
+	sap.ui.core.IconPool.addIcon();
+
 	var idWelcomePage = "welcome";
 	var idSitePage = "site";
 	var idSensorPage = "sensor";
@@ -276,6 +233,7 @@ function mainFunction(){
 		var detailPageChart_sensor = buildChartPage("temperature_detailPageChart_sensor" + sensorNumber,oModelSensorData, app, sensorNumber ,chart_sensor);
 
 		//mainPage.addContent(sensorTile);
+		sensorTile.addStyleClass("iconTemperature");
 		tileContainer.addTile(sensorTile);
 		app.addPage(detailPageChart_sensor);
 		
